@@ -84,9 +84,6 @@ void argument_stack (char **argv, int argc, struct intr_frame *if_){
 	address -= 8;
 	memset(address, 0, sizeof(char*));
 
-	// address -= 8*argc;
-	// memcpy(address, &argv, 8*argc);
-
 	address -= (sizeof(char*) * argc);
 	memcpy(address, argv, sizeof(char*) * argc);
 
@@ -149,7 +146,6 @@ process_fork (const char *name, struct intr_frame *if_) {
 	struct parent_info my_data;
 	my_data.parent = thread_current();
 	my_data.parent_f = if_;
-
 	struct thread *cur = thread_current();
 	memcpy(&cur->parent_tf, my_data.parent_f , sizeof(struct intr_frame));
 
@@ -214,7 +210,7 @@ duplicate_pte (uint64_t *pte, void *va, void *aux) {
 	 */
 	if (!pml4_set_page (current->pml4, va, newpage, writable)) {
 		/* 6. TODO: if fail to insert page, do error handling. 
-		 * 6. 작업: 페이지를 삽입하지 못할 경우 오류 처리를 수행합니다.
+		 * 6. 작업: 페이지를 삽입하지 못할 경우 오c류 처리를 수행합니다.
 		 */
 		return false;
 
@@ -326,12 +322,12 @@ process_exec (void *f_name) {
 	
 	/* We first kill the current context */
 	process_cleanup ();
-
+		
 	/* And then load the binary */
 	lock_acquire(&filesys_lock);
 	success = load (file_name, &_if);
 	lock_release(&filesys_lock);
-
+	
 	// hex_dump(_if.rsp, _if.rsp, USER_STACK - (uint64_t)_if.rsp, true);
 
 	/* If load failed, quit. */
